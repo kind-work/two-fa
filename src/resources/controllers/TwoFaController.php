@@ -18,6 +18,7 @@ class TwoFaController extends Controller {
     $this->google2fa = new Google2FA();
     $this->google2fa->setAlgorithm(Constants::SHA512);
     $this->google2fa->setKeyRegeneration(20);
+    $this->user = User::current();
   }
   
   /**
@@ -41,13 +42,12 @@ class TwoFaController extends Controller {
     $key = $request->input("key");
     
     if ($valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
-      $user = User::current();
-      $user->set("two_fa", $key);
-      $user->save();
+      $this->user->set("two_fa", $key);
+      $this->user->save();
     }
     
     return [
-      "success" => $valid
+      "success" => $valid,
     ];
   }
   
@@ -55,21 +55,38 @@ class TwoFaController extends Controller {
     $this->boot();
     
     $secret = $request->input("code");
-    $key = User::current()->data()["two_fa"];
+    $key = $this->user->data()["two_fa"];
     
     if ($key && $secret && $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $request->session()->put("two_fa_authenticated", true);
       return redirect(cp_route("index"));
     } else {
+      $error = "An unknown error occurred. Perhaps you made a mistake entering your code. Please try again.";
+
       if (!$key) {
         $error = "2FA is not properly setup. Please set it up or contact your administrator for help.";
       } elseif (!$secret) {
         $error = "Please enter your code";
-      } else {
-        $error = "An unknown error occurred. Perhaps you made a mistake entering your code. Please try again.";
       }
       
       return view("twofa::2fa", ["error" => $error]);
     }
+  }
+  
+  public function disable(Request $request) {
+    $this->boot();
+    
+    $secret = $request->input("secret");
+    $key = $this->user->data()["two_fa"];
+    $valid = $valid = $this->google2fa->verifyKey($key, $secret, $this->window);
+    
+    if ($key && $secret && $valid) {
+      $this->user->set("two_fa", null);
+      $this->user->save();
+    }
+    
+    return [
+      "success" => $valid,
+    ];
   }
 }

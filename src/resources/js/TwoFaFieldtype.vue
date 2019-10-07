@@ -1,7 +1,12 @@
 <template>
     <div class="relative clearfix">
         <div v-if="isAlreadyActive" class="content">
-          <p>Your account is already being protected by 2FA.</p>
+          <p>Your account is already being protected by 2FA. If you would like to pair with new device and or de-activate Two FA please enter your Two FA code below and click 'Disable'.</p>
+          
+          <div v-if="isCurrentUser" class="input-group">
+            <input type="text" v-model="secret" class="input-text">
+            <button @click="deactivate" class="btn rounded-l-none" :disabled="isInValid">Disable</button>
+          </div>
         </div>
         
         <div v-if="!isCurrentUser && !isAlreadyActive" class="content">
@@ -10,7 +15,7 @@
       
         <transition name="two-fa-fade">
           <div v-if="isDisabled && isCurrentUser && !isAlreadyActive" class="activate flex flex-col items-center justify-center absolute top-0 right-0 bottom-0 left-0 z-10">
-            <button @click="setEnabling" class="btn btn-primary">Protect My Account with 2FA</button>
+            <button @click="enabling = true" class="btn btn-primary">Protect My Account with 2FA</button>
             
             <div class="content pt-2">
               <p>Enhance the security of my account by requiring a time based 2FA code when logging in.</p>
@@ -34,7 +39,7 @@
               
               <div class="input-group">
                 <input type="text" v-model="secret" class="input-text">
-                <button @click="activate" class="btn btn-primary rounded-l-none" :disabled='isInValid'>Activate</button>
+                <button @click="activate" class="btn btn-primary rounded-l-none" :disabled="isInValid">Activate</button>
               </div>
             </div>
             
@@ -70,7 +75,7 @@ export default {
         return {
             data: this.value,
             enabling: false,
-            secret: '',
+            secret: "",
             showApps: null
         };
     },
@@ -97,20 +102,39 @@ export default {
             key: this.meta.key,
           }
         ).then(response => {
-          this.$notify.success('2FA Activated');
-          this.data = this.meta.key;
+          if (response.data.success === true) {
+            this.$notify.success("2FA Activated");
+            this.data = this.meta.key;
+          } else {
+            this.$notify.error("Something went wrong");
+          }
         }).catch(e => {
-          this.$notify.error('Something went wrong');
-        })
-        .finally(() => {
+          this.$notify.error("Something went wrong");
+        }).finally(() => {
           this.enabling = false;
-          this.secret = '';
+          this.secret = "";
           this.showApps = null;
         });
       },
-      setEnabling() {
-        this.enabling = true;
-      }
+      deactivate() {
+        this.$axios.post(
+          this.meta.actions.disable,
+          {
+            secret: this.secret,
+          }
+        ).then(response => {
+          if (response.data.success === true) {
+            this.$notify.success("2FA Disabled");
+            this.data = null;
+          } else {
+            this.$notify.error("Something went wrong");
+          }
+        }).catch(e => {
+          this.$notify.error("Something went wrong");
+        }).finally(() => {
+          this.secret = "";
+        });
+      },
     }
 };
 </script>

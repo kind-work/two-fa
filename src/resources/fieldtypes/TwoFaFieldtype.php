@@ -17,7 +17,8 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
 
     return [
       "actions" => [
-        "activate" => cp_route("two-fa.activate")
+        "activate" => cp_route("two-fa.activate"),
+        "disable" => cp_route("two-fa.disable"),
       ],
       "email" => $email,
       "key" => $secretKey,
