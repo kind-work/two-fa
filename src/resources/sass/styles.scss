@@ -1,0 +1,12 @@
+// Transitions
+.two-fa-fade-enter-active, .two-fa-fade-leave-active {
+  transition: opacity 480ms ease-in-out 12ms, transform 480ms ease-in-out 12ms;
+}
+.two-fa-fade-enter, .two-fa-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-1em);
+}
+.two-fa-error {
+  border: #9e5552 1px solid;
+  background-color: #e75650;
+}
