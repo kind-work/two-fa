@@ -10,20 +10,26 @@ use Statamic\Facades\User;
 use Statamic\Exceptions\AuthenticationException;
 use Statamic\Exceptions\AuthorizationException;
 
-class CheckTwoFa
-{   
-    public function handle(Request $request, Closure $next)
-    {
-//         $google2fa = new Google2FA();
-      
-        $user = User::current();
-        
-//         dump($google2fa->generateSecretKey());
-        
-        if ($user && isset($user->toArray()['two_fa']) && $request->path() !== 'cp/two-fa' && !$request->session()->get('two_fa_authenticated')) {
-            return redirect('/cp/two-fa');
-        }
-
-        return $next($request);
+class CheckTwoFa {   
+  public function handle(Request $request, Closure $next) {
+    $user = User::current();
+    
+    if (
+        // make sure we have a user
+        $user &&
+        // make sure two_fa is set
+        isset($user->toArray()["two_fa"]) &&
+        // make sure we have a key
+        !empty($user->toArray()["two_fa"]) &&
+        // make sure we are not on the 2FA auth route
+        $request->path() !== "cp/two-fa" &&
+        // make sure we are not already authed with 2FA on the session
+        !$request->session()->get("two_fa_authenticated")) {
+      // If we get here go to the two FA page to get the code
+      return redirect(cp_route("two-fa"));
     }
+
+    // Otherwise lets continue
+    return $next($request);
+  }
 }

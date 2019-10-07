@@ -1,11 +1,15 @@
 <template>
     <div class="relative clearfix">
-        <div v-if="!isCurrentUser" class="content">
+        <div v-if="isAlreadyActive" class="content">
+          <p>Your account is already being protected by 2FA.</p>
+        </div>
+        
+        <div v-if="!isCurrentUser && !isAlreadyActive" class="content">
           <p>A user must enable 2FA on their own account.</p>
         </div>
       
         <transition name="two-fa-fade">
-          <div v-if="isDisabled && isCurrentUser" class="activate flex flex-col items-center justify-center absolute top-0 right-0 bottom-0 left-0 z-10">
+          <div v-if="isDisabled && isCurrentUser && !isAlreadyActive" class="activate flex flex-col items-center justify-center absolute top-0 right-0 bottom-0 left-0 z-10">
             <button @click="setEnabling" class="btn btn-primary">Protect My Account with 2FA</button>
             
             <div class="content pt-2">
@@ -14,7 +18,7 @@
           </div>
         </transition>
         
-        <div v-if="isCurrentUser" class="activate-form">
+        <div v-if="isCurrentUser && !isAlreadyActive" class="activate-form">
           <img class="float-left" :src="meta.qrCode" />
           
           <div class="right-side float-left p-2">
@@ -71,6 +75,9 @@ export default {
         };
     },
     computed: {
+      isAlreadyActive() {
+        return this.data ? true : false;
+      },
       isCurrentUser() {
         return this.meta.email === this.$store.state.publish.base.values.email;
       },

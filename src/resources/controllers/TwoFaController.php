@@ -3,7 +3,6 @@
 namespace KindWork\TwoFa\Controllers;
 
 use Statamic\Facades\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use PragmaRX\Google2FAQRCode\Google2FA;
@@ -27,11 +26,6 @@ class TwoFaController extends Controller {
    * @return View
    */
   public function index() {
-/*
-    Auth::logout();
-
-    return redirect(request()->get("redirect", "/"));
-*/
     return view("twofa::2fa");
   }
   
@@ -65,14 +59,14 @@ class TwoFaController extends Controller {
     
     if ($key && $secret && $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $request->session()->put("two_fa_authenticated", true);
-      return redirect("/cp");
+      return redirect(cp_route("index"));
     } else {
       if (!$key) {
-        $error = '2FA is not properly setup. Please set it up or contact your administrator for help.';
+        $error = "2FA is not properly setup. Please set it up or contact your administrator for help.";
       } elseif (!$secret) {
-        $error = 'Please enter your code';
+        $error = "Please enter your code";
       } else {
-        $error = 'An unknown error occurred. Perhaps you made a mistake entering your code. Please try again.';
+        $error = "An unknown error occurred. Perhaps you made a mistake entering your code. Please try again.";
       }
       
       return view("twofa::2fa", ["error" => $error]);
