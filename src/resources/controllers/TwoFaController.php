@@ -60,17 +60,17 @@ class TwoFaController extends Controller {
     if ($key && $secret && $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $request->session()->put("two_fa_authenticated", true);
       return redirect(cp_route("index"));
-    } else {
-      $error = "An unknown error occurred. Perhaps you made a mistake entering your code. Please try again.";
-
-      if (!$key) {
-        $error = "2FA is not properly setup. Please set it up or contact your administrator for help.";
-      } elseif (!$secret) {
-        $error = "Please enter your code";
-      }
-      
-      return view("twofa::2fa", ["error" => $error]);
     }
+
+    $error = "An unknown error occurred. Perhaps you made a mistake entering your code. Please try again.";
+
+    if (!$key) {
+      $error = "2FA is not properly setup. Please set it up or contact your administrator for help.";
+    } elseif (!$secret) {
+      $error = "Please enter your code";
+    }
+    
+    return view("twofa::2fa", ["error" => $error]);
   }
   
   public function disable(Request $request) {
@@ -78,7 +78,7 @@ class TwoFaController extends Controller {
     
     $secret = $request->input("secret");
     $key = $this->user->data()["two_fa"];
-    $valid = $valid = $this->google2fa->verifyKey($key, $secret, $this->window);
+    $valid = $this->google2fa->verifyKey($key, $secret, $this->window);
     
     if ($key && $secret && $valid) {
       $this->user->set("two_fa", null);
