@@ -165,6 +165,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [Fieldtype],
   data: function data() {
@@ -902,11 +903,19 @@ var render = function() {
     [
       _vm.isAlreadyActive
         ? _c("div", { staticClass: "content" }, [
-            _c("p", [
-              _vm._v(
-                "Your account is already being protected by 2FA. If you would like to pair with new device and or de-activate Two FA please enter your Two FA code below and click 'Disable'."
-              )
-            ]),
+            !_vm.isCurrentUser
+              ? _c("p", [
+                  _vm._v("This account is already being protected by 2FA.")
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.isCurrentUser
+              ? _c("p", [
+                  _vm._v(
+                    "Your account is already being protected by 2FA. If you would like to pair with new device and or de-activate Two FA please enter your Two FA code below and click 'Disable'."
+                  )
+                ])
+              : _vm._e(),
             _vm._v(" "),
             _vm.isCurrentUser
               ? _c("div", { staticClass: "input-group" }, [
@@ -1085,23 +1094,21 @@ var render = function() {
                       _vm._v(" "),
                       _vm._m(3),
                       _vm._v(" "),
-                      _vm._m(4),
-                      _vm._v(" "),
-                      _vm._m(5)
+                      _vm._m(4)
                     ])
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.showApps === "ios"
                   ? _c("ul", [
+                      _vm._m(5),
+                      _vm._v(" "),
                       _vm._m(6),
                       _vm._v(" "),
                       _vm._m(7),
                       _vm._v(" "),
                       _vm._m(8),
                       _vm._v(" "),
-                      _vm._m(9),
-                      _vm._v(" "),
-                      _vm._m(10)
+                      _vm._m(9)
                     ])
                   : _vm._e()
               ])
@@ -1113,24 +1120,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href:
-              "https://play.google.com/store/apps/details?id=org.shadowice.flocke.andotp",
-            target: "_blank"
-          }
-        },
-        [_vm._v("andOTP")]
-      )
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

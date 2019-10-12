@@ -1,7 +1,9 @@
 <template>
     <div class="relative clearfix">
         <div v-if="isAlreadyActive" class="content">
-          <p>Your account is already being protected by 2FA. If you would like to pair with new device and or de-activate Two FA please enter your Two FA code below and click 'Disable'.</p>
+          <p v-if="!isCurrentUser">This account is already being protected by 2FA.</p>
+          
+          <p v-if="isCurrentUser">Your account is already being protected by 2FA. If you would like to pair with new device and or de-activate Two FA please enter your Two FA code below and click 'Disable'.</p>
           
           <div v-if="isCurrentUser" class="input-group">
             <input type="text" v-model="secret" class="input-text">
@@ -47,7 +49,6 @@
               <p>Don't have a 2FA App? Get one for <button @click="showApps = 'android'">Android</button> or <button @click="showApps = 'ios'">iOS</button>.</p>
               
               <ul v-if="showApps === 'android'">
-                <li><a href="https://play.google.com/store/apps/details?id=org.shadowice.flocke.andotp" target="_blank">andOTP</a></li>
                 <li><a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Google Authenticator</a></li>
                 <li><a href="https://play.google.com/store/apps/details?id=com.authy.authy" target="_blank">Authy</a></li>
                 <li><a href="https://play.google.com/store/apps/details?id=com.lastpass.authenticator" target="_blank">LastPass Authenticator</a></li>
