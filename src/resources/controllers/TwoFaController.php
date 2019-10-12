@@ -38,15 +38,18 @@ class TwoFaController extends Controller {
    */
   public function activate(Request $request) {
     $this->boot();
-       
+    
+    // Set up variables to check key & check if key is valid
     $secret = $request->input("secret");
     $key = $request->input("key");
     
-    if ($valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
+    // Check that the code and key match, if they do save the key to activate
+    if ($key && $secret && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $this->user->set("two_fa", $key);
       $this->user->save();
     }
     
+    // Return the success based on $valid
     return [
       "success" => $valid,
     ];
@@ -54,53 +57,60 @@ class TwoFaController extends Controller {
   
   public function authenticate(Request $request) {
     $this->boot();
-    
-    $secret = $request->input("code");
-    $key = $this->user->data()["two_fa"];
-    $two_fa_locked = $this->user->data()["two_fa_locked"] ?? false;
-    $invalid_2fa_count = $request->session()->get("invalid_2fa_count", 0);
-    
-    if ($two_fa_locked) {
+
+    // Check to see if the accout is locked, if so log out and show locked msg.    
+    if ($two_fa_locked = $this->user->data()["two_fa_locked"] ?? false) {
       Auth::logout();
-      return view("twofa::locked", ["error" => "Your account has been locked. Please contact an administrator to unlock your account."]);
+      return view("twofa::locked");
     }
     
+    // Set up variables
+    $secret = $request->input("code");
+    $key = $this->user->data()["two_fa"] ?? false;
+    $invalid_2fa_count = $request->session()->get("invalid_2fa_count", 0);
+    
+    // Check code and if passes set auth on session and reset invalid count for session
     if ($key && $secret && $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $request->session()->put("two_fa_authenticated", true);
       $request->session()->put("invalid_2fa_count", 0);
       return redirect(cp_route("index"));
     }
 
-    $error = "An unknown error occurred. Perhaps you made a mistake entering your code. Please try again.";
-
+    // Set default error msg and then overide if key or secret missing.
+    $error = __("twofa::errors.unknown");
     if (!$key) {
-      $error = "2FA is not properly setup. Please set it up or contact your administrator for help.";
+      $error = __("twofa::errors.setup");
     } elseif (!$secret) {
-      $error = "Please enter your code";
+      $error = __("twofa::errors.code");
     }
     
+    // If the invalid count is too high lock the account
     if ($invalid_2fa_count > 5) {
       $this->user->set("two_fa_locked", true);
       $this->user->save();
     }
 
+    // Increment the invalid count (we already returned way above if it was correct)
     $request->session()->put("invalid_2fa_count", ($invalid_2fa_count + 1));
     
+    // Return the view with the error
     return view("twofa::2fa", ["error" => $error]);
   }
   
   public function disable(Request $request) {
     $this->boot();
     
+    // Set up variables & check if key is valid
     $secret = $request->input("secret");
-    $key = $this->user->data()["two_fa"];
-    $valid = $this->google2fa->verifyKey($key, $secret, $this->window);
+    $key = $this->user->data()["two_fa"] ?? false;
     
-    if ($key && $secret && $valid) {
+    // Check that the code and key match and if they are we can disable 2FA
+    if ($key && $secret && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $this->user->set("two_fa", null);
       $this->user->save();
     }
     
+    // Return if we were successful disabling 2FA
     return [
       "success" => $valid,
     ];

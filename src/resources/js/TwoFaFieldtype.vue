@@ -1,26 +1,26 @@
 <template>
     <div class="relative clearfix">
         <div v-if="isAlreadyActive" class="content">
-          <p v-if="!isCurrentUser">This account is already being protected by 2FA.</p>
+          <p v-if="!isCurrentUser">{{ this.meta.activated.other_msg }}</p>
           
-          <p v-if="isCurrentUser">Your account is already being protected by 2FA. If you would like to pair with new device and or de-activate Two FA please enter your Two FA code below and click 'Disable'.</p>
+          <p v-if="isCurrentUser">{{ this.meta.activated.msg }}</p>
           
           <div v-if="isCurrentUser" class="input-group">
             <input type="text" v-model="secret" class="input-text">
-            <button @click="deactivate" class="btn rounded-l-none" :disabled="isInValid">Disable</button>
+            <button @click="deactivate" class="btn rounded-l-none" :disabled="isInValid">{{ this.meta.activated.button }}</button>
           </div>
         </div>
         
         <div v-if="!isCurrentUser && !isAlreadyActive" class="content">
-          <p>A user must enable 2FA on their own account.</p>
+          <p>{{ this.meta.activate.other_user_msg }}</p>
         </div>
       
         <transition name="two-fa-fade">
           <div v-if="isDisabled && isCurrentUser && !isAlreadyActive" class="activate flex flex-col items-center justify-center absolute top-0 right-0 bottom-0 left-0 z-10">
-            <button @click="enabling = true" class="btn btn-primary">Protect My Account with 2FA</button>
+            <button @click="enabling = true" class="btn btn-primary">{{ this.meta.activate.enable.button }}</button>
             
             <div class="content pt-2">
-              <p>Enhance the security of my account by requiring a time based 2FA code when logging in.</p>
+              <p>{{ this.meta.activate.enable.description }}</p>
             </div>
           </div>
         </transition>
@@ -30,38 +30,28 @@
           
           <div class="right-side float-left p-2">
             <div class="content">
-              <p class="break-all"><strong>Key:</strong> {{ meta.key }}</p>
-              <p class="break-all"><strong>URL:</strong> {{ meta.url }}</p>
+              <p class="break-all"><strong>{{ this.meta.activate.key_label }}:</strong> {{ meta.key }}</p>
+              <p class="break-all"><strong>{{ this.meta.activate.url_label }}:</strong> {{ meta.url }}</p>
             </div>
             
             <div class="pt-2">
-              <label class="publish-field-label pb-2">
-                Time Based 2FA Code
-              </label>
+              <label class="publish-field-label pb-2">{{ this.meta.activate.label }}</label>
               
               <div class="input-group">
                 <input type="text" v-model="secret" class="input-text">
-                <button @click="activate" class="btn btn-primary rounded-l-none" :disabled="isInValid">Activate</button>
+                <button @click="activate" class="btn btn-primary rounded-l-none" :disabled="isInValid">{{ this.meta.activate.button }}</button>
               </div>
             </div>
             
             <div class="content pt-2">
-              <p>Don't have a 2FA App? Get one for <button @click="showApps = 'android'">Android</button> or <button @click="showApps = 'ios'">iOS</button>.</p>
+              <p>{{ this.meta.activate.get_app }} <button @click="showApps = 'android'">Android</button>, <button @click="showApps = 'ios'">iOS</button>.</p>
               
               <ul v-if="showApps === 'android'">
-                <li><a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2" target="_blank">Google Authenticator</a></li>
-                <li><a href="https://play.google.com/store/apps/details?id=com.authy.authy" target="_blank">Authy</a></li>
-                <li><a href="https://play.google.com/store/apps/details?id=com.lastpass.authenticator" target="_blank">LastPass Authenticator</a></li>
-                <li><a href="https://play.google.com/store/apps/details?id=com.duosecurity.duomobile" target="_blank">Duo Mobile</a></li>
-                <li><a href="https://play.google.com/store/apps/details?id=com.azure.authenticator" target="_blank">Microsoft Authenticator</a></li>
+                <li v-for="(app, index) in this.meta.activate.android" :key="index"><a :href="app.url" target="_blank">{{ app.name }}</a></li>
               </ul>
               
               <ul v-if="showApps === 'ios'">
-                <li><a href="https://apps.apple.com/us/app/authy/id494168017" target="_blank">Authy</a></li>
-                <li><a href="https://apps.apple.com/us/app/lastpass-authenticator/id1079110004" target="_blank">LastPass Authenticator</a></li>
-                <li><a href="https://apps.apple.com/us/app/duo-mobile/id422663827" target="_blank">Duo Mobile</a></li>
-                <li><a href="https://apps.apple.com/us/app/microsoft-authenticator/id983156458" target="_blank">Microsoft Authenticator</a></li>
-                <li><a href="https://apps.apple.com/us/app/google-authenticator/id388497605" target="_blank">Google Authenticator</a></li>
+                <li v-for="(app, index) in this.meta.activate.ios" :key="index"><a :href="app.url" target="_blank">{{ app.name }}</a></li>
               </ul>
             </div>
           </div>
@@ -104,13 +94,13 @@ export default {
           }
         ).then(response => {
           if (response.data.success === true) {
-            this.$notify.success("2FA Activated");
+            this.$notify.success(this.meta.activate.activated);
             this.data = this.meta.key;
           } else {
-            this.$notify.error("Something went wrong");
+            this.$notify.error(this.meta.activate.erorrs.code);
           }
         }).catch(e => {
-          this.$notify.error("Something went wrong");
+          this.$notify.error(this.meta.activate.errors.unknown);
         }).finally(() => {
           this.enabling = false;
           this.secret = "";
@@ -125,13 +115,13 @@ export default {
           }
         ).then(response => {
           if (response.data.success === true) {
-            this.$notify.success("2FA Disabled");
+            this.$notify.success(this.meta.deactivate.disabled);
             this.data = null;
           } else {
-            this.$notify.error("Something went wrong");
+            this.$notify.error(this.meta.deactivate.errors.code);
           }
         }).catch(e => {
-          this.$notify.error("Something went wrong");
+          this.$notify.error(this.meta.deactivate.errors.unknown);
         }).finally(() => {
           this.secret = "";
         });

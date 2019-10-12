@@ -156,16 +156,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [Fieldtype],
   data: function data() {
@@ -199,14 +189,14 @@ __webpack_require__.r(__webpack_exports__);
         key: this.meta.key
       }).then(function (response) {
         if (response.data.success === true) {
-          _this.$notify.success("2FA Activated");
+          _this.$notify.success(_this.meta.activate.activated);
 
           _this.data = _this.meta.key;
         } else {
-          _this.$notify.error("Something went wrong");
+          _this.$notify.error(_this.meta.activate.erorrs.code);
         }
       })["catch"](function (e) {
-        _this.$notify.error("Something went wrong");
+        _this.$notify.error(_this.meta.activate.errors.unknown);
       })["finally"](function () {
         _this.enabling = false;
         _this.secret = "";
@@ -220,14 +210,14 @@ __webpack_require__.r(__webpack_exports__);
         secret: this.secret
       }).then(function (response) {
         if (response.data.success === true) {
-          _this2.$notify.success("2FA Disabled");
+          _this2.$notify.success(_this2.meta.deactivate.disabled);
 
           _this2.data = null;
         } else {
-          _this2.$notify.error("Something went wrong");
+          _this2.$notify.error(_this2.meta.deactivate.errors.code);
         }
       })["catch"](function (e) {
-        _this2.$notify.error("Something went wrong");
+        _this2.$notify.error(_this2.meta.deactivate.errors.unknown);
       })["finally"](function () {
         _this2.secret = "";
       });
@@ -904,17 +894,11 @@ var render = function() {
       _vm.isAlreadyActive
         ? _c("div", { staticClass: "content" }, [
             !_vm.isCurrentUser
-              ? _c("p", [
-                  _vm._v("This account is already being protected by 2FA.")
-                ])
+              ? _c("p", [_vm._v(_vm._s(this.meta.activated.other_msg))])
               : _vm._e(),
             _vm._v(" "),
             _vm.isCurrentUser
-              ? _c("p", [
-                  _vm._v(
-                    "Your account is already being protected by 2FA. If you would like to pair with new device and or de-activate Two FA please enter your Two FA code below and click 'Disable'."
-                  )
-                ])
+              ? _c("p", [_vm._v(_vm._s(this.meta.activated.msg))])
               : _vm._e(),
             _vm._v(" "),
             _vm.isCurrentUser
@@ -948,7 +932,7 @@ var render = function() {
                       attrs: { disabled: _vm.isInValid },
                       on: { click: _vm.deactivate }
                     },
-                    [_vm._v("Disable")]
+                    [_vm._v(_vm._s(this.meta.activated.button))]
                   )
                 ])
               : _vm._e()
@@ -957,7 +941,7 @@ var render = function() {
       _vm._v(" "),
       !_vm.isCurrentUser && !_vm.isAlreadyActive
         ? _c("div", { staticClass: "content" }, [
-            _c("p", [_vm._v("A user must enable 2FA on their own account.")])
+            _c("p", [_vm._v(_vm._s(this.meta.activate.other_user_msg))])
           ])
         : _vm._e(),
       _vm._v(" "),
@@ -980,14 +964,12 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("Protect My Account with 2FA")]
+                  [_vm._v(_vm._s(this.meta.activate.enable.button))]
                 ),
                 _vm._v(" "),
                 _c("div", { staticClass: "content pt-2" }, [
                   _c("p", [
-                    _vm._v(
-                      "Enhance the security of my account by requiring a time based 2FA code when logging in."
-                    )
+                    _vm._v(_vm._s(this.meta.activate.enable.description))
                   ])
                 ])
               ]
@@ -1005,19 +987,23 @@ var render = function() {
             _c("div", { staticClass: "right-side float-left p-2" }, [
               _c("div", { staticClass: "content" }, [
                 _c("p", { staticClass: "break-all" }, [
-                  _c("strong", [_vm._v("Key:")]),
+                  _c("strong", [
+                    _vm._v(_vm._s(this.meta.activate.key_label) + ":")
+                  ]),
                   _vm._v(" " + _vm._s(_vm.meta.key))
                 ]),
                 _vm._v(" "),
                 _c("p", { staticClass: "break-all" }, [
-                  _c("strong", [_vm._v("URL:")]),
+                  _c("strong", [
+                    _vm._v(_vm._s(this.meta.activate.url_label) + ":")
+                  ]),
                   _vm._v(" " + _vm._s(_vm.meta.url))
                 ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "pt-2" }, [
                 _c("label", { staticClass: "publish-field-label pb-2" }, [
-                  _vm._v("\n            Time Based 2FA Code\n          ")
+                  _vm._v(_vm._s(this.meta.activate.label))
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "input-group" }, [
@@ -1050,14 +1036,14 @@ var render = function() {
                       attrs: { disabled: _vm.isInValid },
                       on: { click: _vm.activate }
                     },
-                    [_vm._v("Activate")]
+                    [_vm._v(_vm._s(this.meta.activate.button))]
                   )
                 ])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "content pt-2" }, [
                 _c("p", [
-                  _vm._v("Don't have a 2FA App? Get one for "),
+                  _vm._v(_vm._s(this.meta.activate.get_app) + " "),
                   _c(
                     "button",
                     {
@@ -1069,7 +1055,7 @@ var render = function() {
                     },
                     [_vm._v("Android")]
                   ),
-                  _vm._v(" or "),
+                  _vm._v(", "),
                   _c(
                     "button",
                     {
@@ -1085,31 +1071,35 @@ var render = function() {
                 ]),
                 _vm._v(" "),
                 _vm.showApps === "android"
-                  ? _c("ul", [
-                      _vm._m(0),
-                      _vm._v(" "),
-                      _vm._m(1),
-                      _vm._v(" "),
-                      _vm._m(2),
-                      _vm._v(" "),
-                      _vm._m(3),
-                      _vm._v(" "),
-                      _vm._m(4)
-                    ])
+                  ? _c(
+                      "ul",
+                      _vm._l(this.meta.activate.android, function(app, index) {
+                        return _c("li", { key: index }, [
+                          _c(
+                            "a",
+                            { attrs: { href: app.url, target: "_blank" } },
+                            [_vm._v(_vm._s(app.name))]
+                          )
+                        ])
+                      }),
+                      0
+                    )
                   : _vm._e(),
                 _vm._v(" "),
                 _vm.showApps === "ios"
-                  ? _c("ul", [
-                      _vm._m(5),
-                      _vm._v(" "),
-                      _vm._m(6),
-                      _vm._v(" "),
-                      _vm._m(7),
-                      _vm._v(" "),
-                      _vm._m(8),
-                      _vm._v(" "),
-                      _vm._m(9)
-                    ])
+                  ? _c(
+                      "ul",
+                      _vm._l(this.meta.activate.ios, function(app, index) {
+                        return _c("li", { key: index }, [
+                          _c(
+                            "a",
+                            { attrs: { href: app.url, target: "_blank" } },
+                            [_vm._v(_vm._s(app.name))]
+                          )
+                        ])
+                      }),
+                      0
+                    )
                   : _vm._e()
               ])
             ])
@@ -1119,186 +1109,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href:
-              "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2",
-            target: "_blank"
-          }
-        },
-        [_vm._v("Google Authenticator")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href:
-              "https://play.google.com/store/apps/details?id=com.authy.authy",
-            target: "_blank"
-          }
-        },
-        [_vm._v("Authy")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href:
-              "https://play.google.com/store/apps/details?id=com.lastpass.authenticator",
-            target: "_blank"
-          }
-        },
-        [_vm._v("LastPass Authenticator")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href:
-              "https://play.google.com/store/apps/details?id=com.duosecurity.duomobile",
-            target: "_blank"
-          }
-        },
-        [_vm._v("Duo Mobile")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href:
-              "https://play.google.com/store/apps/details?id=com.azure.authenticator",
-            target: "_blank"
-          }
-        },
-        [_vm._v("Microsoft Authenticator")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href: "https://apps.apple.com/us/app/authy/id494168017",
-            target: "_blank"
-          }
-        },
-        [_vm._v("Authy")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href:
-              "https://apps.apple.com/us/app/lastpass-authenticator/id1079110004",
-            target: "_blank"
-          }
-        },
-        [_vm._v("LastPass Authenticator")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href: "https://apps.apple.com/us/app/duo-mobile/id422663827",
-            target: "_blank"
-          }
-        },
-        [_vm._v("Duo Mobile")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href:
-              "https://apps.apple.com/us/app/microsoft-authenticator/id983156458",
-            target: "_blank"
-          }
-        },
-        [_vm._v("Microsoft Authenticator")]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("li", [
-      _c(
-        "a",
-        {
-          attrs: {
-            href:
-              "https://apps.apple.com/us/app/google-authenticator/id388497605",
-            target: "_blank"
-          }
-        },
-        [_vm._v("Google Authenticator")]
-      )
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

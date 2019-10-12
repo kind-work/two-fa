@@ -20,6 +20,9 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
         "activate" => cp_route("two-fa.activate"),
         "disable" => cp_route("two-fa.disable"),
       ],
+      "deactivate" => __("twofa::deactivate"),
+      "activate" => __("twofa::activate"),
+      "activated" => __("twofa::activated"),
       "email" => $email,
       "key" => $secretKey,
       "url" => $google2fa->getQRCodeUrl(
