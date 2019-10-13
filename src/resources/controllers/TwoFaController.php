@@ -59,7 +59,7 @@ class TwoFaController extends Controller {
     $this->boot();
 
     // Check to see if the accout is locked, if so log out and show locked msg.    
-    if ($two_fa_locked = $this->user->data()["two_fa_locked"] ?? false) {
+    if ($this->user->data()["two_fa_locked"] ?? false) {
       Auth::logout();
       return view("twofa::locked");
     }

@@ -2,7 +2,7 @@
 
 namespace KindWork\TwoFa;
 
-use Statamic\Extend\ServiceProvider as BaseProvider;
+use Statamic\Providers\AddonServiceProvider as BaseProvider;
 
 class ServiceProvider extends BaseProvider {
   protected $scripts = [

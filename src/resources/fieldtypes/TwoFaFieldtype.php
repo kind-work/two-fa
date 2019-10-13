@@ -2,6 +2,7 @@
 
 namespace KindWork\TwoFa\Fieldtypes;
 
+use Config;
 use Statamic\Facades\User;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use PragmaRX\Google2FA\Support\Constants;
@@ -26,12 +27,12 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
       "email" => $email,
       "key" => $secretKey,
       "url" => $google2fa->getQRCodeUrl(
-        \Config::get("app.name"),
+        Config::get("app.name"),
         $email,
         $secretKey
       ),
       "qrCode" => $google2fa->getQRCodeInline(
-        \Config::get("app.name"),
+        Config::get("app.name"),
         $email,
         $secretKey
       )
