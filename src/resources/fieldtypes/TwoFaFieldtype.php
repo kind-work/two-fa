@@ -16,6 +16,7 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
   private $id;
   private $secretKey;
   private $google2fa;
+  private $error;
   
   public function __construct(Request $request) {
     $this->url = $request->url();
@@ -31,7 +32,7 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
     // Set the intial offset to one
     $offset = 1;
     
-    // While we have segments in the CB base url increment the offset
+    // While we have segments in the CP base url increment the offset
     while ($cp_url->getSegment($offset)) {
       $offset += 1;
     }
@@ -54,7 +55,7 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
         // Get the app name
         $this->name = Config::get('app.name');
 
-        // Store the user id &email
+        // Store the user id & email
         $this->email = $user->email();
         $this->id = $user->id();
 
@@ -63,7 +64,12 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
         $this->google2fa->setAlgorithm(Constants::SHA512);
         $this->google2fa->setKeyRegeneration(20);
         $this->secretKey = $this->google2fa->generateSecretKey(32);
+      } else {
+        $this->error = __("twofa::activate.other_user_msg");
       }
+    } else {
+      // Set non user route error
+      $this->error = __("twofa::errors.invalid_resource");
     }
   }
   
@@ -73,7 +79,7 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
     // If the name was not defined then we are not on a user edit page, display an error
     if ($this->name == null) {
       return [
-        "invalid_resource" => "The Two FA Fieldtype only works for user profile types.",
+        "invalid_resource" => $this->error,
       ];
     }
     

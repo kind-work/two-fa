@@ -19,7 +19,7 @@
 
       <div class="mb-4">
         <label class="mb-1">{{ __("twofa::auth.label") }}</label>
-        <input type="password" class="input-text input-text" name="code" id="code">
+        <input type="number" class="two-fa-input input-text" name="code" id="code" pattern="\d{6}" maxlength="6" minlength="6" step="1" required>
       </div>
       <div class="flex justify-between items-center">
         <button type="submit" class="btn btn-primary">{{ __("twofa::auth.button") }}</button>

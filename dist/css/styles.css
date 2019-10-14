@@ -14,3 +14,16 @@
   background-color: #e75650;
 }
 
+input.two-fa-input::-webkit-outer-spin-button,
+input.two-fa-input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0;
+  /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input.two-fa-input[type=number] {
+  -moz-appearance: textfield;
+  /* Firefox */
+}
+

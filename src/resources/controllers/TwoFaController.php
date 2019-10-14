@@ -14,24 +14,28 @@ class TwoFaController extends Controller {
   private $google2fa;
   private $window = 1;
   private $user;
+  private $current_user;
   
   private function boot($user_id = null) {
+    // Set up 2FA
     $this->google2fa = new Google2FA();
     $this->google2fa->setAlgorithm(Constants::SHA512);
     $this->google2fa->setKeyRegeneration(20);
     
-    $current_user = User::current();
-    
+    // Get current user for future reference
+    $this->current_user = User::current();
+
+    // Is there a user id param
     if ($user_id) {
+      // Find the user
       $user = User::find($user_id);
-      if ($user->id() == $current_user->id()
-        || $user->can("users:edit-passwords")) {
+      // Check to see if we have the user, and the user is current
+      // or if the user can edit user passwords
+      if ($user
+        && ($user->id() == $this->current_user->id()
+            || $this->current_user->can("users:edit-passwords"))) {
           $this->user = $user;
         }
-    }
-    
-    if ($this->user == null) {
-      $this->user = $current_user; 
     }
   }
   
@@ -41,6 +45,14 @@ class TwoFaController extends Controller {
    * @return View
    */
   public function index() {
+    $this->current_user = User::current();
+    
+    // Check to see if the accout is locked, if so log out and show locked msg.    
+    if ($this->current_user->data()["two_fa_locked"] ?? false) {
+      Auth::logout();
+      return view("twofa::locked");
+    }
+    
     return view("twofa::2fa");
   }
   
@@ -56,8 +68,11 @@ class TwoFaController extends Controller {
     $secret = $request->input("secret");
     $key = $request->input("key");
     
-    // Check that the code and key match, if they do save the key to activate
-    if ($key && $secret && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
+    // Check that we have a user, key and code and the code and key match, if they do save the key to activate
+    if ($this->user
+      && $key
+      && $secret
+      && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $this->user->set("two_fa", $key);
       $this->user->save();
     }
@@ -72,14 +87,14 @@ class TwoFaController extends Controller {
     $this->boot();
 
     // Check to see if the accout is locked, if so log out and show locked msg.    
-    if ($this->user->data()["two_fa_locked"] ?? false) {
+    if ($this->current_user->data()["two_fa_locked"] ?? false) {
       Auth::logout();
       return view("twofa::locked");
     }
     
     // Set up variables
     $secret = $request->input("code");
-    $key = $this->user->data()["two_fa"] ?? false;
+    $key = $this->current_user->data()["two_fa"] ?? false;
     $invalid_2fa_count = $request->session()->get("invalid_2fa_count", 0);
     
     // Check code and if passes set auth on session and reset invalid count for session
@@ -99,8 +114,10 @@ class TwoFaController extends Controller {
     
     // If the invalid count is too high lock the account
     if ($invalid_2fa_count > 5) {
-      $this->user->set("two_fa_locked", true);
-      $this->user->save();
+      $this->current_user->set("two_fa_locked", true);
+      $this->current_user->save();
+      Auth::logout();
+      return view("twofa::locked");
     }
 
     // Increment the invalid count (we already returned way above if it was correct)
@@ -117,8 +134,11 @@ class TwoFaController extends Controller {
     $secret = $request->input("secret");
     $key = $this->user->data()["two_fa"] ?? false;
     
-    // Check that the code and key match and if they are we can disable 2FA
-    if ($key && $secret && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
+    // Check that we hae a user, key ad code and the code and key match and if they are we can disable 2FA
+    if ($this-user
+      && $key
+      && $secret
+      && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $this->user->set("two_fa", null);
       $this->user->save();
     }

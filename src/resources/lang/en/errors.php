@@ -7,4 +7,5 @@ return [
   "unknown" => "An unknown error occurred. Perhaps you made a mistake entering your code. Please try again.",
   "setup" => "2FA is not properly setup. Please set it up or contact your administrator for help.",
   "code" => "Please enter your code",
+  "invalid_resource" => "The Two FA Fieldtype only works for user profile types.",
 ];

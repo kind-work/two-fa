@@ -156,6 +156,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [Fieldtype],
   data: function data() {
@@ -169,9 +171,6 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     isAlreadyActive: function isAlreadyActive() {
       return this.data ? true : false;
-    },
-    isCurrentUser: function isCurrentUser() {
-      return this.meta.email === this.$store.state.publish.base.values.email;
     },
     isDisabled: function isDisabled() {
       return !this.data && !this.enabling;
@@ -893,62 +892,64 @@ var render = function() {
     "div",
     { staticClass: "relative clearfix" },
     [
-      _vm.isAlreadyActive
+      _vm.meta.invalid_resource
+        ? _c("div", [_c("p", [_vm._v(_vm._s(_vm.meta.invalid_resource))])])
+        : _vm._e(),
+      _vm._v(" "),
+      !_vm.meta.invalid_resource && _vm.isAlreadyActive
         ? _c("div", { staticClass: "content" }, [
-            !_vm.isCurrentUser
-              ? _c("p", [_vm._v(_vm._s(this.meta.activated.other_msg))])
-              : _vm._e(),
+            _c("p", [_vm._v(_vm._s(this.meta.activated.msg))]),
             _vm._v(" "),
-            _vm.isCurrentUser
-              ? _c("p", [_vm._v(_vm._s(this.meta.activated.msg))])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.isCurrentUser
-              ? _c("div", { staticClass: "input-group" }, [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.secret,
-                        expression: "secret"
-                      }
-                    ],
-                    staticClass: "input-text",
-                    attrs: { type: "text" },
-                    domProps: { value: _vm.secret },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.secret = $event.target.value
-                      }
+            _c("div", { staticClass: "input-group" }, [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.secret,
+                    expression: "secret"
+                  }
+                ],
+                staticClass: "two-fa-input input-text",
+                attrs: {
+                  type: "number",
+                  pattern: "\\d{6}",
+                  maxlength: "6",
+                  minlength: "6",
+                  step: "1"
+                },
+                domProps: { value: _vm.secret },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
                     }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn rounded-l-none",
-                      attrs: { disabled: _vm.isInValid },
-                      on: { click: _vm.deactivate }
-                    },
-                    [_vm._v(_vm._s(this.meta.activated.button))]
-                  )
-                ])
-              : _vm._e()
+                    _vm.secret = $event.target.value
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn rounded-l-none",
+                  attrs: { disabled: _vm.isInValid },
+                  on: { click: _vm.deactivate }
+                },
+                [_vm._v(_vm._s(this.meta.activated.button))]
+              )
+            ])
           ])
         : _vm._e(),
       _vm._v(" "),
-      !_vm.isCurrentUser && !_vm.isAlreadyActive
+      !_vm.meta.invalid_resource && !_vm.isAlreadyActive
         ? _c("div", { staticClass: "content" }, [
             _c("p", [_vm._v(_vm._s(this.meta.activate.other_user_msg))])
           ])
         : _vm._e(),
       _vm._v(" "),
       _c("transition", { attrs: { name: "two-fa-fade" } }, [
-        _vm.isDisabled && _vm.isCurrentUser && !_vm.isAlreadyActive
+        !_vm.meta.invalid_resource && _vm.isDisabled && !_vm.isAlreadyActive
           ? _c(
               "div",
               {
@@ -979,7 +980,7 @@ var render = function() {
           : _vm._e()
       ]),
       _vm._v(" "),
-      _vm.isCurrentUser && !_vm.isAlreadyActive
+      !_vm.meta.invalid_resource && !_vm.isAlreadyActive
         ? _c("div", { staticClass: "activate-form" }, [
             _c("img", {
               staticClass: "float-left",
@@ -1018,8 +1019,14 @@ var render = function() {
                         expression: "secret"
                       }
                     ],
-                    staticClass: "input-text",
-                    attrs: { type: "text" },
+                    staticClass: "two-fa-input input-text",
+                    attrs: {
+                      type: "number",
+                      pattern: "\\d{6}",
+                      maxlength: "6",
+                      minlength: "6",
+                      step: "1"
+                    },
                     domProps: { value: _vm.secret },
                     on: {
                       input: function($event) {

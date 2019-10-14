@@ -1,22 +1,24 @@
 <template>
     <div class="relative clearfix">
-        <div v-if="isAlreadyActive" class="content">
-          <p v-if="!isCurrentUser">{{ this.meta.activated.other_msg }}</p>
+        <div v-if="meta.invalid_resource">
+          <p>{{ meta.invalid_resource }}</p>
+        </div>
+    
+        <div v-if="!meta.invalid_resource && isAlreadyActive" class="content">
+          <p>{{ this.meta.activated.msg }}</p>
           
-          <p v-if="isCurrentUser">{{ this.meta.activated.msg }}</p>
-          
-          <div v-if="isCurrentUser" class="input-group">
-            <input type="text" v-model="secret" class="input-text">
+          <div class="input-group">
+            <input type="number" v-model="secret" class="two-fa-input input-text" pattern="\d{6}" maxlength="6" minlength="6" step="1">
             <button @click="deactivate" class="btn rounded-l-none" :disabled="isInValid">{{ this.meta.activated.button }}</button>
           </div>
         </div>
         
-        <div v-if="!isCurrentUser && !isAlreadyActive" class="content">
+        <div v-if="!meta.invalid_resource && !isAlreadyActive" class="content">
           <p>{{ this.meta.activate.other_user_msg }}</p>
         </div>
       
         <transition name="two-fa-fade">
-          <div v-if="isDisabled && isCurrentUser && !isAlreadyActive" class="activate flex flex-col items-center justify-center absolute top-0 right-0 bottom-0 left-0 z-10">
+          <div v-if="!meta.invalid_resource && isDisabled && !isAlreadyActive" class="activate flex flex-col items-center justify-center absolute top-0 right-0 bottom-0 left-0 z-10">
             <button @click="enabling = true" class="btn btn-primary">{{ this.meta.activate.enable.button }}</button>
             
             <div class="content pt-2">
@@ -25,7 +27,7 @@
           </div>
         </transition>
         
-        <div v-if="isCurrentUser && !isAlreadyActive" class="activate-form">
+        <div v-if="!meta.invalid_resource && !isAlreadyActive" class="activate-form">
           <img class="float-left" :src="meta.qrCode" />
           
           <div class="right-side float-left p-2">
@@ -38,7 +40,7 @@
               <label class="publish-field-label pb-2">{{ this.meta.activate.label }}</label>
               
               <div class="input-group">
-                <input type="text" v-model="secret" class="input-text">
+                <input type="number" v-model="secret" class="two-fa-input input-text" pattern="\d{6}" maxlength="6" minlength="6" step="1">
                 <button @click="activate" class="btn btn-primary rounded-l-none" :disabled="isInValid">{{ this.meta.activate.button }}</button>
               </div>
             </div>
@@ -73,9 +75,6 @@ export default {
     computed: {
       isAlreadyActive() {
         return this.data ? true : false;
-      },
-      isCurrentUser() {
-        return this.meta.email === this.$store.state.publish.base.values.email;
       },
       isDisabled() {
         return !this.data && !this.enabling;
