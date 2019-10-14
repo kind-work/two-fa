@@ -15,11 +15,24 @@ class TwoFaController extends Controller {
   private $window = 1;
   private $user;
   
-  private function boot() {
+  private function boot($user_id = null) {
     $this->google2fa = new Google2FA();
     $this->google2fa->setAlgorithm(Constants::SHA512);
     $this->google2fa->setKeyRegeneration(20);
-    $this->user = User::current();
+    
+    $current_user = User::current();
+    
+    if ($user_id) {
+      $user = User::find($user_id);
+      if ($user->id() == $current_user->id()
+        || $user->can("users:edit-passwords")) {
+          $this->user = $user;
+        }
+    }
+    
+    if ($this->user == null) {
+      $this->user = $current_user; 
+    }
   }
   
   /**
@@ -37,7 +50,7 @@ class TwoFaController extends Controller {
    * @return JSON (success or fail)
    */
   public function activate(Request $request) {
-    $this->boot();
+    $this->boot($request->input("id"));
     
     // Set up variables to check key & check if key is valid
     $secret = $request->input("secret");
@@ -98,7 +111,7 @@ class TwoFaController extends Controller {
   }
   
   public function disable(Request $request) {
-    $this->boot();
+    $this->boot($request->input("id"));
     
     // Set up variables & check if key is valid
     $secret = $request->input("secret");

@@ -186,7 +186,8 @@ __webpack_require__.r(__webpack_exports__);
 
       this.$axios.post(this.meta.actions.activate, {
         secret: this.secret,
-        key: this.meta.key
+        key: this.meta.key,
+        id: this.meta.id
       }).then(function (response) {
         if (response.data.success === true) {
           _this.$notify.success(_this.meta.activate.activated);
@@ -207,7 +208,8 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       this.$axios.post(this.meta.actions.disable, {
-        secret: this.secret
+        secret: this.secret,
+        id: this.meta.id
       }).then(function (response) {
         if (response.data.success === true) {
           _this2.$notify.success(_this2.meta.deactivate.disabled);

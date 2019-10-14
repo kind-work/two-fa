@@ -91,6 +91,7 @@ export default {
           {
             secret: this.secret,
             key: this.meta.key,
+            id: this.meta.id,
           }
         ).then(response => {
           if (response.data.success === true) {
@@ -112,6 +113,7 @@ export default {
           this.meta.actions.disable,
           {
             secret: this.secret,
+            id: this.meta.id,
           }
         ).then(response => {
           if (response.data.success === true) {
