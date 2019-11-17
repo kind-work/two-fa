@@ -18,9 +18,9 @@ class CheckTwoFa {
         // make sure we have a user
         $user &&
         // make sure two_fa is set
-        isset($user->toArray()["two_fa"]) &&
+        isset($user->data()["two_fa"]) &&
         // make sure we have a key
-        !empty($user->toArray()["two_fa"]) &&
+        !empty($user->data()["two_fa"]) &&
         // make sure we are not on the 2FA auth route
         $request->path() !== "cp/two-fa" &&
         // make sure we are not already authed with 2FA on the session

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use PragmaRX\Google2FA\Support\Constants;
 
-class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
+class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {  
   private $url;
   private $name;
   private $email;
