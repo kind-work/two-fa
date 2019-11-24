@@ -94,13 +94,13 @@ export default {
           }
         ).then(response => {
           if (response.data.success === true) {
-            this.$notify.success(this.meta.activate.activated);
+            this.$toast.success(this.meta.activate.activated);
             this.data = this.meta.key;
           } else {
-            this.$notify.error(this.meta.activate.erorrs.code);
+            this.$toast.error(this.meta.activate.erorrs.code);
           }
         }).catch(e => {
-          this.$notify.error(this.meta.activate.errors.unknown);
+          this.$toast.error(this.meta.activate.errors.unknown);
         }).finally(() => {
           this.enabling = false;
           this.secret = "";
@@ -116,17 +116,17 @@ export default {
           }
         ).then(response => {
           if (response.data.success === true) {
-            this.$notify.success(this.meta.deactivate.disabled);
+            this.$toast.success(this.meta.deactivate.disabled);
             this.data = null;
           } else {
-            this.$notify.error(this.meta.deactivate.errors.code);
+            this.$toast.error(this.meta.deactivate.errors.code);
           }
         }).catch(e => {
-          this.$notify.error(this.meta.deactivate.errors.unknown);
+          this.$toast.error(this.meta.deactivate.errors.unknown);
         }).finally(() => {
           this.secret = "";
         });
-      },
+      }
     }
 };
 </script>

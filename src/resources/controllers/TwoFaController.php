@@ -75,6 +75,8 @@ class TwoFaController extends Controller {
       && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $this->user->set("two_fa", $key);
       $this->user->save();
+      $request->session()->put("two_fa_authenticated", true);
+      $request->session()->pull("invalid_2fa_count");
     }
     
     // Return the success based on $valid
@@ -100,7 +102,7 @@ class TwoFaController extends Controller {
     // Check code and if passes set auth on session and reset invalid count for session
     if ($key && $secret && $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $request->session()->put("two_fa_authenticated", true);
-      $request->session()->put("invalid_2fa_count", 0);
+      $request->session()->pull("invalid_2fa_count");
       return redirect(cp_route("index"));
     }
 
@@ -135,12 +137,14 @@ class TwoFaController extends Controller {
     $key = $this->user->data()["two_fa"] ?? false;
     
     // Check that we hae a user, key ad code and the code and key match and if they are we can disable 2FA
-    if ($this-user
+    if ($this->user
       && $key
       && $secret
       && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $this->user->set("two_fa", null);
       $this->user->save();
+      $request->session()->pull("two_fa_authenticated");
+      $request->session()->pull("invalid_2fa_count");
     }
     
     // Return if we were successful disabling 2FA
