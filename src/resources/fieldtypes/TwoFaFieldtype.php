@@ -13,7 +13,7 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
   private $url;
   private $name;
   private $email;
-  private $id;
+  private $userId;
   private $secretKey;
   private $google2fa;
   private $error;
@@ -57,20 +57,23 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
 
         // Store the user id & email
         $this->email = $user->email();
-        $this->id = $user->id();
+        $this->userId = $user->id();
 
         // Set up 2FA
         $this->google2fa = new Google2FA();
         $this->google2fa->setAlgorithm(Constants::SHA512);
         $this->google2fa->setKeyRegeneration(20);
         $this->secretKey = $this->google2fa->generateSecretKey(32);
-      } else {
-        $this->error = __("twofa::activate.other_user_msg");
+        return true;
       }
-    } else {
-      // Set non user route error
-      $this->error = __("twofa::errors.invalid_resource");
+      
+      $this->error = __("twofa::activate.other_user_msg");
+      return false;
     }
+    
+    // Set non user route error
+    $this->error = __("twofa::errors.invalid_resource");
+    return false;
   }
   
   public function preload() {
@@ -93,7 +96,7 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
       "activate" => __("twofa::activate"),
       "activated" => __("twofa::activated"),
       "email" => $this->email,
-      "id" => $this->id,
+      "id" => $this->userId,
       "key" => $this->secretKey,
       "url" => $this->google2fa->getQRCodeUrl(
         $this->name,

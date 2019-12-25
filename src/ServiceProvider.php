@@ -2,9 +2,9 @@
 
 namespace KindWork\TwoFa;
 
-use Statamic\Providers\AddonServiceProvider as BaseProvider;
+use Statamic\Providers\AddonServiceProvider;
 
-class ServiceProvider extends BaseProvider {
+class ServiceProvider extends AddonServiceProvider {
   protected $scripts = [
     __DIR__.'/../dist/js/scripts.js'
   ];
