@@ -10,9 +10,13 @@ Statamic 2FA is commercial software. You do not need a licence for development b
 
 ## Install
 
-Install the addon using composer:
+### Install the addon using composer
 
-`composer require kind-work/two-fa`
+```composer require kind-work/two-fa```
+
+### Copy over the assets
+
+ ```php artisan vendor:publish --provider="KindWork\TwoFa\ServiceProvider" --force```
 
 ## Usage
 
