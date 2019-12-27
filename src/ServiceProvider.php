@@ -14,7 +14,7 @@ class ServiceProvider extends AddonServiceProvider {
   ];
   
   protected $routes = [
-    'cp' => __DIR__.'/routes/cp.php'
+    'cp' => __DIR__.'/resources/routes/cp.php'
   ];
   
   protected $middleware = [

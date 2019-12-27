@@ -1,25 +1,21 @@
 <template>
     <div class="relative clearfix">
-        <div v-if="meta.invalid_resource">
-          <p>{{ meta.invalid_resource }}</p>
+        <div v-if="state === 'error'">
+          <p>{{ meta.error }}</p>
         </div>
     
-        <div v-if="!meta.invalid_resource && isAlreadyActive" class="content">
+        <div v-if="state === 'active' || state === 'disabling'" class="content">
           <p>{{ this.meta.activated.msg }}</p>
           
           <div class="input-group">
             <input type="number" v-model="secret" class="two-fa-input input-text" pattern="\d{6}" maxlength="6" minlength="6" step="1">
-            <button @click="deactivate" class="btn rounded-l-none" :disabled="isInValid">{{ this.meta.activated.button }}</button>
+            <button @click="deactivate" class="btn rounded-l-none" :disabled="isInValid || state === 'disabling'">{{ this.meta.activated.button }}</button>
           </div>
-        </div>
-        
-        <div v-if="!meta.invalid_resource && !isAlreadyActive" class="content">
-          <p>{{ this.meta.activate.other_user_msg }}</p>
         </div>
       
         <transition name="two-fa-fade">
-          <div v-if="!meta.invalid_resource && isDisabled && !isAlreadyActive" class="activate flex flex-col items-center justify-center absolute top-0 right-0 bottom-0 left-0 z-10">
-            <button @click="enabling = true" class="btn btn-primary">{{ this.meta.activate.enable.button }}</button>
+          <div v-if="state === 'idle'" class="activate flex flex-col items-center justify-center absolute top-0 right-0 bottom-0 left-0 z-10">
+            <button @click="state = 'ready'" class="btn btn-primary">{{ this.meta.activate.enable.button }}</button>
             
             <div class="content pt-2">
               <p>{{ this.meta.activate.enable.description }}</p>
@@ -27,7 +23,7 @@
           </div>
         </transition>
         
-        <div v-if="!meta.invalid_resource && !isAlreadyActive" class="activate-form">
+        <div v-if="state === 'idle' || state === 'ready' || state === 'activating'" class="activate-form">
           <img class="float-left" :src="meta.qrCode" />
           
           <div class="right-side float-left p-2">
@@ -41,7 +37,7 @@
               
               <div class="input-group">
                 <input type="number" v-model="secret" class="two-fa-input input-text" pattern="\d{6}" maxlength="6" minlength="6" step="1">
-                <button @click="activate" class="btn btn-primary rounded-l-none" :disabled="isInValid">{{ this.meta.activate.button }}</button>
+                <button @click="activate" class="btn btn-primary rounded-l-none" :disabled="isInValid || state === 'activating'">{{ this.meta.activate.button }}</button>
               </div>
             </div>
             
@@ -66,25 +62,21 @@ export default {
     mixins: [Fieldtype],
     data() {
         return {
+            state: this.meta.state,
             data: this.value,
-            enabling: false,
             secret: "",
             showApps: null
         };
     },
     computed: {
-      isAlreadyActive() {
-        return this.data ? true : false;
-      },
-      isDisabled() {
-        return !this.data && !this.enabling;
-      },
       isInValid() {
         return /^\d{6}$/.test(this.secret) !== true;
       }
     },
     methods: {
       activate() {
+        this.state = 'activating';
+
         this.$axios.post(
           this.meta.actions.activate,
           {
@@ -96,18 +88,22 @@ export default {
           if (response.data.success === true) {
             this.$toast.success(this.meta.activate.activated);
             this.data = this.meta.key;
+            this.state = 'active';
           } else {
             this.$toast.error(this.meta.activate.erorrs.code);
+            this.state = 'idle';
           }
         }).catch(e => {
           this.$toast.error(this.meta.activate.errors.unknown);
+          this.state = 'idle';
         }).finally(() => {
-          this.enabling = false;
           this.secret = "";
           this.showApps = null;
         });
       },
       deactivate() {
+        this.state = 'disabling';
+
         this.$axios.post(
           this.meta.actions.disable,
           {
@@ -118,11 +114,14 @@ export default {
           if (response.data.success === true) {
             this.$toast.success(this.meta.deactivate.disabled);
             this.data = null;
+            this.state = 'idle';
           } else {
             this.$toast.error(this.meta.deactivate.errors.code);
+            this.state = 'active';
           }
         }).catch(e => {
           this.$toast.error(this.meta.deactivate.errors.unknown);
+          this.state = 'active';
         }).finally(() => {
           this.secret = "";
         });

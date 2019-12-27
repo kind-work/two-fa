@@ -17,6 +17,7 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
   private $secretKey;
   private $google2fa;
   private $error;
+  private $active;
   
   public function __construct(Request $request) {
     $this->url = $request->url();
@@ -27,18 +28,18 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
     $url = Url::fromString($this->url);
     
     // Get the CP base url
-    $cp_url = Url::fromString(cp_route("index"));
+    $cpUrl = Url::fromString(cp_route("index"));
     
     // Set the intial offset to one
     $offset = 1;
     
     // While we have segments in the CP base url increment the offset
-    while ($cp_url->getSegment($offset)) {
+    while ($cpUrl->getSegment($offset)) {
       $offset += 1;
     }
 
     // Get the current user for future use
-    $current_user = User::current();
+    $currentUser = User::current();
 
     // If the first section of the offset is users and we have a second
     // we assume that we are actually on a user edit profile page
@@ -49,8 +50,8 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
         
       // Check to see if the current user is equal to the selected user
       // or that the current user is able to edit user passwords
-      if ($user->id() == $current_user->id()
-        || $current_user->can("users:edit-passwords")) {
+      if ($user->id() == $currentUser->id()
+        || $currentUser->can("users:edit-passwords")) {
 
         // Get the app name
         $this->name = Config::get('app.name');
@@ -60,6 +61,7 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
         $this->userId = $user->id();
 
         // Set up 2FA
+        $this->active = isset($user->data()["two_fa"]) ? true : false;
         $this->google2fa = new Google2FA();
         $this->google2fa->setAlgorithm(Constants::SHA512);
         $this->google2fa->setKeyRegeneration(20);
@@ -77,17 +79,20 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
   }
   
   public function preload() {
+    // Get the data needed for setup
     $this->setup();
 
     // If the name was not defined then we are not on a user edit page, display an error
     if ($this->name == null) {
       return [
-        "invalid_resource" => $this->error,
+        "state" => "error",
+        "error" => $this->error,
       ];
     }
     
     // Otherwise lets return the data needed for the Vue component
     return [
+      "state" => $this->active ? "active" : "idle",
       "actions" => [
         "activate" => cp_route("two-fa.activate"),
         "disable" => cp_route("two-fa.disable"),
