@@ -77,6 +77,7 @@ class TwoFaController extends Controller {
       && $secret
       && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $this->user->set("two_fa", Crypt::encryptString($key));
+      $this->user->set("2FA", "✓");
       $this->user->save();
       $request->session()->put("two_fa_authenticated", true);
       $request->session()->pull("invalid_2fa_count");
@@ -157,6 +158,7 @@ class TwoFaController extends Controller {
       && $secret
       && $valid = $this->google2fa->verifyKey($key, $secret, $this->window)) {
       $this->user->set("two_fa", null);
+      $this->user->set("2FA", "✕");
       $this->user->save();
 
       // If we are deactivating our own 2FA destory the session 2fa data
