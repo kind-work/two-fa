@@ -63,9 +63,7 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
         // Set up 2FA
         $this->active = isset($user->data()["two_fa"]) ? true : false;
         $this->google2fa = new Google2FA();
-        $this->google2fa->setAlgorithm(Constants::SHA512);
-        $this->google2fa->setKeyRegeneration(20);
-        $this->secretKey = $this->google2fa->generateSecretKey(32);
+        $this->secretKey = $this->google2fa->generateSecretKey();
         return true;
       }
       
@@ -97,9 +95,6 @@ class TwoFaFieldtype extends \Statamic\Fields\Fieldtype {
         "activate" => cp_route("two-fa.activate"),
         "disable" => cp_route("two-fa.disable"),
       ],
-      "deactivate" => __("twofa::deactivate"),
-      "activate" => __("twofa::activate"),
-      "activated" => __("twofa::activated"),
       "email" => $this->email,
       "id" => $this->userId,
       "key" => $this->secretKey,

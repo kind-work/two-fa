@@ -22,8 +22,6 @@ class TwoFaController extends Controller {
   private function boot($userId = null) {
     // Set up 2FA
     $this->google2fa = new Google2FA();
-    $this->google2fa->setAlgorithm(Constants::SHA512);
-    $this->google2fa->setKeyRegeneration(20);
     
     // Get current user for future reference
     $this->currentUser = User::current();

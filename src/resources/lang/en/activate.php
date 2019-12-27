@@ -37,6 +37,10 @@ return [
       "name" => "Microsoft Authenticator",
       "url" => "https://play.google.com/store/apps/details?id=com.azure.authenticator",
     ],
+    [
+      "name" => "Google Authenticator",
+      "url" => "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2",
+    ]
   ],
   "ios" => [
     [
@@ -59,5 +63,9 @@ return [
       "name" => "Microsoft Authenticator",
       "url" => "https://apps.apple.com/us/app/microsoft-authenticator/id983156458",
     ],
+    [
+      "name" => "Google Authenticator",
+      "url" => "https://apps.apple.com/ca/app/google-authenticator/id388497605",
+    ]
   ],
 ];
