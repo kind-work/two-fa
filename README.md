@@ -6,7 +6,7 @@ Statamic 2FA is a middleware addon for [Statamic 3](https://github.com/statamic/
 
 ## Pricing
 
-Statamic 2FA is commercial software. You do not need a licence for development but when you are ready to deploy the site to production please purchase a licence per site on the [Statamic Marketplace](https://statamic.com/marketplace).
+Statamic 2FA is commercial software. You do not need a licence for development but when you are ready to deploy the site to production please purchase a licence per site on the [Statamic Marketplace](https://statamic.com/marketplace/addons/2fa).
 
 ## Install
 
