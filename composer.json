@@ -29,5 +29,13 @@
                 "KindWork\\TwoFa\\ServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "post-package-install": [
+            "@php artisan vendor:publish --provider=\"KindWork\\TwoFa\\ServiceProvider\" --force"
+        ],
+        "post-package-update": [
+            "@php artisan vendor:publish --provider=\"KindWork\\TwoFa\\ServiceProvider\" --force"
+        ]
     }
 }
