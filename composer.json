@@ -1,33 +1,33 @@
 {
-    "name": "kind-work/two-fa",
-    "description": "Statamic Two Fa addon",
-    "type": "statamic-addon",
-    "require": {
-      "pragmarx/google2fa-qrcode": "^1.0.3",
-      "spatie/url": "^1.3.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "KindWork\\TwoFa\\": "src"
-        }
-    },
-    "authors": [
-        {
-            "name": "Jonathan Cohlmeyer"
-        }
-    ],
-    "support": {
-        "email": "help@kind.work"
-    },
-    "extra": {
-        "statamic": {
-            "name": "Two Fa",
-            "description": "Statamic Two Fa addon"
-        },
-        "laravel": {
-            "providers": [
-                "KindWork\\TwoFa\\ServiceProvider"
-            ]
-        }
+  "name": "kind-work/two-fa",
+  "description": "Statamic 3 2FA addon",
+  "type": "statamic-addon",
+  "require": {
+    "pragmarx/google2fa-qrcode": "^1.0.3",
+    "spatie/url": "^1.3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "KindWork\\TwoFa\\": "src"
     }
+  },
+  "authors": [
+    {
+      "name": "Jonathan Cohlmeyer"
+    }
+  ],
+  "support": {
+    "email": "help@kind.work"
+  },
+  "extra": {
+    "statamic": {
+      "name": "Two Fa",
+      "description": "Statamic 3 2FA addon"
+    },
+    "laravel": {
+      "providers": [
+          "KindWork\\TwoFa\\ServiceProvider"
+      ]
+    }
+  }
 }
