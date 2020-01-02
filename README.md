@@ -1,3 +1,4 @@
+![Statamic 3.0+](https://img.shields.io/badge/Statamic-3.0+-FF269E?style=for-the-badge&link=https://statamic.com)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f2fa45074e8242ee97c2dcaa0f568fd6)](https://www.codacy.com/manual/jcohlmeyer/two-fa?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kind-work/two-fa&amp;utm_campaign=Badge_Grade)
 
 ## Two Factor Login for Statamic 3
@@ -16,7 +17,7 @@ Statamic 2FA is commercial software. You do not need a licence for development b
 
 ### Copy over the assets
 
- ```php artisan vendor:publish --provider="KindWork\TwoFa\ServiceProvider" --force```
+```php artisan vendor:publish --provider="KindWork\TwoFa\ServiceProvider" --force```
 
 ## Usage
 
