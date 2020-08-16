@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Statamic\Facades\User;
 
-class CheckTwoFa {   
+class CheckTwoFa {
   public function handle(Request $request, Closure $next) {
     $user = User::current();
 
@@ -17,9 +17,9 @@ class CheckTwoFa {
         $request->session()->get("two_fa_authenticated")
     ) {
       // Go to the CP Index
-      return redirect(cp_route("index"));    
+      return redirect(cp_route("index"));
     }
-    
+
     if (
         // make sure we have a user
         $user &&
