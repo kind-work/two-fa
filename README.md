@@ -15,10 +15,6 @@ Statamic 2FA is commercial software. You do not need a licence for development b
 
 ```composer require kind-work/two-fa```
 
-### Copy over the assets
-
-```php artisan vendor:publish --provider="KindWork\TwoFa\ServiceProvider" --force```
-
 ## Usage
 
 Add the `two_fa` field to your user blueprint. Edit your user profile in the control panel (CP) to set up 2FA protection for your account.

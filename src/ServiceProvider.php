@@ -5,6 +5,7 @@ namespace KindWork\TwoFa;
 use Statamic\Providers\AddonServiceProvider;
 
 class ServiceProvider extends AddonServiceProvider {
+
   protected $scripts = [
     __DIR__.'/../dist/js/scripts.js'
   ];
@@ -14,7 +15,7 @@ class ServiceProvider extends AddonServiceProvider {
   ];
 
   protected $routes = [
-    'cp' => __DIR__.'/resources/routes/cp.php'
+    'cp' => __DIR__.'/../routes/cp.php'
   ];
 
   protected $middlewareGroups = [
@@ -29,7 +30,19 @@ class ServiceProvider extends AddonServiceProvider {
 
   public function boot() {
     parent::boot();
-    $this->loadViewsFrom(__DIR__.'/resources/views', 'twofa');
-    $this->loadTranslationsFrom(__DIR__.'/resources/lang', 'twofa');
+    $this
+      ->bootAddonViews()
+      ->bootAddonTranslations();
+  }
+
+  protected function bootAddonTranslations() {
+    $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'twofa');
+    return $this;
+  }
+
+  protected function bootAddonViews() {
+    $this->loadViewsFrom(__DIR__.'/../resources/views', 'twofa');
+    $this->publishes([__DIR__.'/../resources/views' => resource_path('views/vendor/twofa')], 'twofa-views');
+    return $this;
   }
 }
