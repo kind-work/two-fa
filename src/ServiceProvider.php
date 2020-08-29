@@ -6,8 +6,6 @@ use Statamic\Providers\AddonServiceProvider;
 
 class ServiceProvider extends AddonServiceProvider {
 
-  protected $publishAfterInstall = false;
-
   protected $scripts = [
     __DIR__.'/../dist/js/scripts.js'
   ];
