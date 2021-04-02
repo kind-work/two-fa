@@ -1,4 +1,4 @@
-let mix = require("laravel-mix");
+let mix = require('laravel-mix');
 
 /*
  |--------------------------------------------------------------------------
@@ -11,5 +11,6 @@ let mix = require("laravel-mix");
  |
  */
 
-mix.js("resources/js/scripts.js", "dist/js")
-   .sass("resources/sass/styles.scss", "dist/css");
+mix
+  .js('resources/js/scripts.js', 'dist/js')
+  .sass('resources/sass/styles.scss', 'dist/css');
