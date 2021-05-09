@@ -23,7 +23,7 @@ class ServiceProvider extends AddonServiceProvider
   public function boot()
   {
     parent::boot();
-    $this->bootAddonViews()->bootAddonTranslations();
+    $this->bootAddonViews()->bootAddonTranslations()->bootAddonMigrations();
   }
 
   protected function bootAddonTranslations()
@@ -38,6 +38,15 @@ class ServiceProvider extends AddonServiceProvider
     $this->publishes(
       [__DIR__ . '/../resources/views' => resource_path('views/vendor/twofa')],
       'twofa-views'
+    );
+    return $this;
+  }
+
+  protected function bootAddonMigrations()
+  {
+    $this->publishes(
+      [__DIR__ . '/../database/migrations' => database_path('migrations')],
+      'twofa-migrations'
     );
     return $this;
   }
