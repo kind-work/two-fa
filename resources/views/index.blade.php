@@ -20,6 +20,7 @@
         <input type="number" class="two-fa-input input-text" name="code" id="code" pattern="\d{6}" maxlength="6" minlength="6" step="1" required>
       </div>
       <div class="flex justify-between items-center">
+        <a href="{{ route('statamic.logout') }}">Cancel</a>
         <button type="submit" class="btn btn-primary">{{ __("twofa::auth.button") }}</button>
       </div>
     </form>
