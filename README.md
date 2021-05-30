@@ -9,9 +9,11 @@ Statamic 2FA is a middleware addon for [Statamic 3](https://github.com/statamic/
 
 Statamic 2FA is commercial software. You do not need a licence for development but when you are ready to deploy the site to production please purchase a licence per site on the [Statamic Marketplace](https://statamic.com/marketplace/addons/2fa).
 
-## Install
+## Installation
 
 ### Install the addon using composer
+
+You can install this addon via composer with the following command or from the Statamic control panel.
 
 ```bash
 composer require kind-work/two-fa
@@ -64,3 +66,23 @@ To force 2FA for specific roles, publish the config file and edit as appropriate
 ```bash
 php artisan vendor:publish --tag="two-fa-config"
 ```
+
+## Database
+
+If you store your users in a database run the following command to generate a database migration.
+
+```bash
+php artisan vendor:publish --tag="twofa-migrations"
+```
+
+## Changelog
+
+Please see the [Release Notes](https://statamic.com/addons/jrc9designstudio/2fa/release-notes) for more information what has changed recently.
+
+## Security
+
+If you discover any security-related issues, please email security@kind.work instead of using the issue tracker.
+
+## License
+
+This is commercial software. You may use the package for your sites. Each site requires its own license. You can purchase a licence from The [Statamic Marketplace](https://statamic.com/marketplace/addons/2fa).
