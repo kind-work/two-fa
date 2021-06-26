@@ -6,7 +6,8 @@ return [
   'label' => 'Time Based 2FA Code',
   'key_label' => 'Key',
   'url_label' => 'URL',
-  'other_user_msg' => 'A user must enable 2FA on their own account.',
+  'other_user_msg' =>
+    'You do not have the permissions to edit another users 2FA settings.',
   'get_app' => "Don't have a 2FA App? Get one for:",
   'enable' => [
     'description' =>

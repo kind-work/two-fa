@@ -193,7 +193,7 @@ class TwoFaController extends Controller
 
     // Set up variables & check if key is valid
     $secret = $request->input('secret');
-    $keyValue = $this->user->data()['two_fa'] ?? false;
+    $keyValue = $this->currentUser->data()['two_fa'] ?? false;
     try {
       $key = Crypt::decryptString($keyValue);
     } catch (DecryptException $e) {
