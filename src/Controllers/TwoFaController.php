@@ -107,8 +107,11 @@ class TwoFaController extends Controller
       $this->user->set('two_fa', Crypt::encryptString($key));
       $this->user->set('2FA', '✓');
       $this->user->save();
-      $request->session()->put('two_fa_authenticated', true);
-      $request->session()->pull('invalid_2fa_count');
+      // If we are activating our own 2FA auto auth and remove invalid 2fa count
+      if ($this->user->id() == $this->currentUser->id()) {
+        $request->session()->put('two_fa_authenticated', true);
+        $request->session()->pull('invalid_2fa_count');
+      }
     }
 
     if ($request->ajax()) {

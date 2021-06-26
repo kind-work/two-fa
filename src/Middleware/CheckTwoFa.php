@@ -17,7 +17,7 @@ class CheckTwoFa
     $this->request = $request;
 
     if ($this->isAuthed()) {
-      if ($this->isTwoFAPath()) {
+      if ($this->isTwoFAPath() && !$request->ajax()) {
         return redirect(cp_route('index'));
       }
       return $next($this->request);
